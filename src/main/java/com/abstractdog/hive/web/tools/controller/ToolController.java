@@ -28,19 +28,16 @@ public class ToolController {
   private String lipwigOutputPath;
 
   @RequestMapping(value = "/lipwig", method = RequestMethod.POST)
-  public String runLipwig(@RequestParam Map<String, Object> params)
-      throws Exception {
+  public String runLipwig(@RequestParam Map<String, Object> params) throws Exception {
 
     File inputFile = File.createTempFile("lipwig-input", null);
     File outputFile = File.createTempFile("lipwig-output", ".svg");
 
-    try {
-      // enter code here
+    Files.write(params.get("plan").toString().getBytes(), inputFile);
 
+    try {
       Process p = Runtime.getRuntime().exec(Paths.get(String.format("%s -i %s -o %s", lipwigPath,
           inputFile.getAbsolutePath(), outputFile.getAbsolutePath())).toString());
-
-      // enter code here
 
       try (BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
         String line;
