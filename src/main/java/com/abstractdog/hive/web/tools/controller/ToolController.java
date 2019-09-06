@@ -36,8 +36,11 @@ public class ToolController {
     Files.write(params.get("plan").toString().getBytes(), inputFile);
 
     try {
-      Process p = Runtime.getRuntime().exec(Paths.get(String.format("%s -i %s -o %s", lipwigPath,
-          inputFile.getAbsolutePath(), outputFile.getAbsolutePath())).toString());
+      ProcessBuilder pb = new ProcessBuilder(String.format("%s -i %s -o %s", lipwigPath,
+          inputFile.getAbsolutePath(), outputFile.getAbsolutePath()));
+      pb.directory(new File(lipwigPath).getParentFile());
+
+      Process p = pb.start();
 
       try (BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
         BufferedReader error = new BufferedReader(new InputStreamReader(p.getErrorStream()))) {
