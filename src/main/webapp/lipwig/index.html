@@ -42,7 +42,10 @@
 
 		<div class="starter-template">
 			<h1>Lipwig</h1>
-			<p class="lead"></p>
+			<p class="lead">
+				This page is a web interface for
+				<a href="https://github.com/t3rmin4t0r" target="_blank">t3rmin4t0r</a>'s <a href="https://github.com/t3rmin4t0r/lipwig" target="_blank">lipwig</a>
+			</p>
 		</div>
 
 		<div class="md-form">
@@ -430,14 +433,18 @@
 		$("#submit_plan").click(function() {
 			$.ajax({
 				url : '/tool/lipwig',
+				dataType: 'json',
 				type: 'POST',
 				data : {
 					plan : $("#explain_area").val()
 				},
 				success : function(response) {
 					console.log(response)
-
-					window.open(response)
+					if (response.success){
+						window.open(response.message);
+					}else{
+						alert(response.message);
+					}
 				}
 			})
 		});
