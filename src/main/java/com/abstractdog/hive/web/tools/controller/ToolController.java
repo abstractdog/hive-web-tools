@@ -33,12 +33,16 @@ public class ToolController {
     File inputFile = File.createTempFile("lipwig-input", null);
     File outputFile = File.createTempFile("lipwig-output", ".svg");
 
-    Files.write(params.get("plan").toString().getBytes(), inputFile);
+    String plan = params.get("plan").toString();
+    System.out.println(plan);
+
+    Files.write(plan.getBytes(), inputFile);
 
     try {
       ProcessBuilder pb = new ProcessBuilder(lipwigPath, "-i", inputFile.getAbsolutePath(), "-o",
           outputFile.getAbsolutePath());
       pb.directory(new File(lipwigPath).getParentFile());
+      System.out.println(pb.command());
 
       Process p = pb.start();
 
