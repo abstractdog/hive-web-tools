@@ -39,9 +39,13 @@ public class ToolController {
       Process p = Runtime.getRuntime().exec(Paths.get(String.format("%s -i %s -o %s", lipwigPath,
           inputFile.getAbsolutePath(), outputFile.getAbsolutePath())).toString());
 
-      try (BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
+      try (BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
+        BufferedReader error = new BufferedReader(new InputStreamReader(p.getErrorStream()))) {
         String line;
 
+        while ((line = error.readLine()) != null) {
+          System.out.println(line);
+        }
         while ((line = input.readLine()) != null) {
           System.out.println(line);
         }
