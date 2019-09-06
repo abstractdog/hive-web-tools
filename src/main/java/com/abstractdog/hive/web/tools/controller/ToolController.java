@@ -63,7 +63,7 @@ public class ToolController {
           sb.append(line + "\n");
         }
       }
-      success = p.exitValue() == 0;
+      success = p.waitFor() == 0;
 
       Files.move(outputFile, finalOutputFile);
     } catch (Exception err) {
