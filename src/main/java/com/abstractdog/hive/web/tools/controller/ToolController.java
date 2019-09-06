@@ -28,7 +28,8 @@ public class ToolController {
   private String lipwigOutputPath;
 
   @RequestMapping(value = "/lipwig", method = RequestMethod.POST)
-  public String runLipwig(@RequestParam Map<String, Object> params) throws Exception {
+  public String runLipwig(@RequestParam Map<String, Object> params)
+      throws Exception {
 
     File inputFile = File.createTempFile("lipwig-input", null);
     File outputFile = File.createTempFile("lipwig-output", ".svg");
@@ -36,7 +37,7 @@ public class ToolController {
     try {
       // enter code here
 
-      Process p = Runtime.getRuntime().exec(Paths.get(String.format("lipwigPath -i %s -o %s",
+      Process p = Runtime.getRuntime().exec(Paths.get(String.format("%s -i %s -o %s", lipwigPath,
           inputFile.getAbsolutePath(), outputFile.getAbsolutePath())).toString());
 
       // enter code here
@@ -58,5 +59,4 @@ public class ToolController {
 
     return String.format("%s%s", lipwigOutputPath, finalOutputFile.getName());
   }
-
 }
