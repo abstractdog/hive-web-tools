@@ -36,8 +36,8 @@ public class ToolController {
     Files.write(params.get("plan").toString().getBytes(), inputFile);
 
     try {
-      ProcessBuilder pb = new ProcessBuilder(String.format("%s -i %s -o %s", lipwigPath,
-          inputFile.getAbsolutePath(), outputFile.getAbsolutePath()));
+      ProcessBuilder pb = new ProcessBuilder(lipwigPath, "-i", inputFile.getAbsolutePath(), "-o",
+          outputFile.getAbsolutePath());
       pb.directory(new File(lipwigPath).getParentFile());
 
       Process p = pb.start();
