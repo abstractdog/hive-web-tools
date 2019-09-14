@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="">
+
+<title>hive web tools hive parser</title>
+
+<!-- Bootstrap core CSS -->
+<link href="/css/bootstrap.min.css" rel="stylesheet">
+
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+
+	<nav
+		class="navbar navbar-toggleable-md navbar-inverse bg-inverse fixed-top">
+		<button class="navbar-toggler navbar-toggler-right" type="button"
+			data-toggle="collapse" data-target="#navbarsExampleDefault"
+			aria-controls="navbarsExampleDefault" aria-expanded="false"
+			aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<a class="navbar-brand" href="index.html">Hive web tools</a>
+
+		<div class="collapse navbar-collapse" id="navbarsExampleDefault">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item"><a class="nav-link"
+					href="lipwig.html">Lipwig</a></li>
+				<li class="nav-item active"><a class="nav-link"
+					href="parser.html">Parser</a></li>
+			</ul>
+		</div>
+	</nav>
+
+	<div class="container">
+
+		<div>
+			<h1>Hive Parser</h1>
+		</div>
+
+		<div class="md-form">
+		<br />
+			<label for="version">Hive version:</label> <select id="version">
+				<option value="3.1.2">3.1.2</option>
+				<option value="2.3.3">2.3.3</option>
+				<option value="1.2.2">1.2.2</option>
+				<option value="0.14.0">0.14.0</option>
+			</select> <br /> <label for="query_area">Query:</label>
+			<small>current limitation: only 1 statement, without trailing semicolon</small>
+			<textarea id="query_area" class="md-textarea form-control" rows="30">
+with customer_total_return as
+(select sr_customer_sk as ctr_customer_sk
+,sr_store_sk as ctr_store_sk
+,sum(SR_FEE) as ctr_total_return
+from store_returns
+,date_dim
+where sr_returned_date_sk = d_date_sk
+and d_year =2000
+group by sr_customer_sk
+,sr_store_sk)
+ select  c_customer_id
+from customer_total_return ctr1
+,store
+,customer
+where ctr1.ctr_total_return > (select avg(ctr_total_return)*1.2
+from customer_total_return ctr2
+where ctr1.ctr_store_sk = ctr2.ctr_store_sk)
+and s_store_sk = ctr1.ctr_store_sk
+and s_state = 'NM'
+and ctr1.ctr_customer_sk = c_customer_sk
+order by c_customer_id
+limit 100
+			</textarea>
+			<button id="submit">Submit</button>
+			<textarea id="result" class="md-textarea form-control" rows="30"
+				placeholder="result will be printed here...">
+			</textarea>
+		</div>
+	</div>
+	<!-- /.container -->
+
+	<script type="text/javascript">
+		$("#submit").click(function() {
+			$("#result").val("");
+			
+			$.ajax({
+				url : '/tool/parse',
+				dataType: 'json',
+				type: 'POST',
+				data : {
+					version:  $("#version").val(),
+					query : $("#query_area").val()
+				},
+				success : function(response) {
+					console.log(response)
+					if (response.success){
+						$("#result").val(response.message)
+					}else{
+						alert(response.message);
+					}
+				}
+			})
+		});
+	</script>
+</body>
+</html>
